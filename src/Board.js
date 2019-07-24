@@ -79,11 +79,23 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
-      return false; // fixme
+      var thisRow = this.rows()[rowIndex]
+      if (thisRow.filter(function(value) {
+        return value === 1
+      }).length > 1) {
+        return true; // fixme
+      } else {
+        return false;
+      }
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
+      for (let i = 0; i < this.rows().length; i++) {
+        if (this.hasRowConflictAt(i)) {
+          return true;
+        }
+      }
       return false; // fixme
     },
 
@@ -94,11 +106,23 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
+      let compareArr = [];
+      for (let i = 0; i < this.rows().length; i++) {
+        compareArr.push(this.rows()[i][colIndex])
+      }
+      if (compareArr.filter(value => value === 1).length > 1) {
+        return true;
+      }
       return false; // fixme
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
+      for (let i = 0; i < this.rows().length; i++) {
+        if (this.hasColConflictAt(i)) {
+          return true;
+        }
+      }
       return false; // fixme
     },
 
@@ -109,26 +133,143 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      var index = majorDiagonalColumnIndexAtFirstRow;
+      let compareArr = [];
+      for (var i = 0; i < this.rows().length - index; i++) {
+        compareArr.push(this.rows()[i][index]);
+        index ++;
+      }
+
+      if (compareArr.filter(value => value === 1).length > 1) {
+        return true;
+      }
+      return false;
+
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
+      var ndiff = this.rows().length + 1;
+      var concatArray = '';
+      for (let i = 0; i < this.rows().length; i++) {
+        concatArray += this.rows()[i].join('');
+      }
+      concatArray = concatArray.split('');
+
+      var indexOfFound = [];
+      for (let i = 0; i < concatArray.length; i++) {
+       if (concatArray[i] === '1') {
+         indexOfFound.push(i + 1);
+       }
+      }
+
+      indexOfFound.reverse();
+
+      for (var i = 0; i < indexOfFound.length; i++) {
+        for (var j = 0; j < indexOfFound.length; j++) {
+          if (indexOfFound[i] !== indexOfFound[j] && (indexOfFound[i] - indexOfFound[j]) % (ndiff) === 0) {
+            return true;
+          }
+        }
+      }
+      // var comparables = [];
+      // var boardCopy = this.rows()
+      // var columns = this.rows().length;
+      // var index = 0;
+
+      // function recurseBoard(array) {
+      //   for (let i = 0; i <= columns.length - i; i++) {
+      //     comparables.push(this.rows()[i][index]);
+      //     index++
+      //   }
+
+      //   if (comparables.filter(value => value === 1).length > 1) {
+      //     return true;
+      //   }
+
+      //   boardCopy.slice(1);
+      //   index = 0;
+      //   recurseBoard(boardCopy);
+      //   console.log(boardCopy);
+      // }
+      // let boardCopy = this.rows();
+      // let columns = this.rows().length;
+
+      // while (boardCopy.length > 0) {
+      //   let compareArr = [];
+      //   let index = 0;
+      //   for (let i = 0; i < boardCopy.length - i; i++) {
+      //     compareArr.push(boardCopy[i][index]);
+      //     index++;
+      //   }
+
+      //   if (compareArr.filter(value => value === 1).length > 1) {
+      //     return true;
+      //   }
+      //   boardCopy = boardCopy.slice(1);
+      //   console.log(boardCopy);
+      //   console.log("compare" + compareArr);
+      // }
+
+      // var rotatedBoard = [];
+
+      // for (let i = 0; i < this.rows().length; i++) {
+      //   var rotated = [];
+      //   for (let j = this.rows().length - 1; j <= 0; j--){
+      //     rotated.push(this.rows()[i][j]);
+      //     }
+      //   rotatedBoard.push(rotated);
+      //   rotated = [];
+      // }
       return false; // fixme
     },
-
-
 
     // Minor Diagonals - go from top-right to bottom-left
     // --------------------------------------------------------------
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
+
+      var index = minorDiagonalColumnIndexAtFirstRow;
+      let compareArr = [];
+      for (var i = 0; i < this.rows().length - index; i++) {
+        compareArr.push(this.rows()[i][index]);
+        index --;
+      }
+
+      if (compareArr.filter(value => value === 1).length > 1) {
+        return true;
+      }
+
       return false; // fixme
+
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
+      var ndiff = this.rows().length - 1;
+      var concatArray = '';
+      for (let i = 0; i < this.rows().length; i++) {
+        concatArray += this.rows()[i].join('');
+      }
+      concatArray = concatArray.split('');
+
+      var indexOfFound = [];
+      for (let i = 0; i < concatArray.length; i++) {
+       if (concatArray[i] === '1') {
+         indexOfFound.push(i + 1);
+       }
+      }
+
+      indexOfFound.reverse();
+
+      for (var i = 0; i < indexOfFound.length; i++) {
+        for (var j = 0; j < indexOfFound.length; j++) {
+          if (indexOfFound[i] !== indexOfFound[j] && (indexOfFound[i] - indexOfFound[j]) % (ndiff) === 0) {
+            return true;
+          }
+        }
+      }
       return false; // fixme
     }
 
