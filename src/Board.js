@@ -78,6 +78,7 @@
     // --------------------------------------------------------------
     //
     // test if a specific row on this board contains a conflict
+    // linear time complexity O(n)
     hasRowConflictAt: function(rowIndex) {
       var thisRow = this.rows()[rowIndex]
       if (thisRow.filter(function(value) {
@@ -90,6 +91,7 @@
     },
 
     // test if any rows on this board contain conflicts
+    // linear time complexity O(n)
     hasAnyRowConflicts: function() {
       for (let i = 0; i < this.rows().length; i++) {
         if (this.hasRowConflictAt(i)) {
@@ -105,6 +107,7 @@
     // --------------------------------------------------------------
     //
     // test if a specific column on this board contains a conflict
+    // linear time complexity O(n)
     hasColConflictAt: function(colIndex) {
       let compareArr = [];
       for (let i = 0; i < this.rows().length; i++) {
@@ -117,6 +120,7 @@
     },
 
     // test if any columns on this board contain conflicts
+    // linear time complexity O(n)
     hasAnyColConflicts: function() {
       for (let i = 0; i < this.rows().length; i++) {
         if (this.hasColConflictAt(i)) {
@@ -132,6 +136,7 @@
     // --------------------------------------------------------------
     //
     // test if a specific major diagonal on this board contains a conflict
+    // linear time complexity O(n)
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
       var index = majorDiagonalColumnIndexAtFirstRow;
       let compareArr = [];
@@ -148,6 +153,7 @@
     },
 
     // test if any major diagonals on this board contain conflicts
+    // linear time complexity O(n)
     hasAnyMajorDiagonalConflicts: function() {
       var ndiff = this.rows().length + 1;
       var concatArray = '';
@@ -157,6 +163,7 @@
       concatArray = concatArray.split('');
 
       var indexOfFound = [];
+
       for (let i = 0; i < concatArray.length; i++) {
        if (concatArray[i] === '1') {
          indexOfFound.push(i + 1);
@@ -165,13 +172,24 @@
 
       indexOfFound.reverse();
 
-      for (var i = 0; i < indexOfFound.length; i++) {
-        for (var j = 0; j < indexOfFound.length; j++) {
-          if (indexOfFound[i] !== indexOfFound[j] && (indexOfFound[i] - indexOfFound[j]) % (ndiff) === 0) {
+      for (let i = 0; i < indexOfFound.length; i++){
+        var start = indexOfFound[i];
+        if (start % this.rows().length === 1){
+          continue;
+        }
+        while (start > this.rows().length) {
+          if (indexOfFound.includes(start - ndiff)){
             return true;
+          }
+          start -= ndiff;
+          if (start % this.rows().length === 1) {
+            start = 0;
           }
         }
       }
+
+      return false;
+
       // var comparables = [];
       // var boardCopy = this.rows()
       // var columns = this.rows().length;
@@ -221,13 +239,14 @@
       //   rotatedBoard.push(rotated);
       //   rotated = [];
       // }
-      return false; // fixme
+
     },
 
     // Minor Diagonals - go from top-right to bottom-left
     // --------------------------------------------------------------
     //
     // test if a specific minor diagonal on this board contains a conflict
+    // linear time complexity O(n)
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
 
       var index = minorDiagonalColumnIndexAtFirstRow;
@@ -246,6 +265,7 @@
     },
 
     // test if any minor diagonals on this board contain conflicts
+    // linear time complexity O(n)
     hasAnyMinorDiagonalConflicts: function() {
       var ndiff = this.rows().length - 1;
       var concatArray = '';
@@ -262,15 +282,24 @@
       }
 
       indexOfFound.reverse();
-
-      for (var i = 0; i < indexOfFound.length; i++) {
-        for (var j = 0; j < indexOfFound.length; j++) {
-          if (indexOfFound[i] !== indexOfFound[j] && (indexOfFound[i] - indexOfFound[j]) % (ndiff) === 0) {
+      for (let i = 0; i < indexOfFound.length; i++){
+        var start = indexOfFound[i];
+        if (start % this.rows().length === 0) {
+          continue;
+        }
+        while (start > this.rows().length) {
+          if (indexOfFound.includes(start - ndiff)){
             return true;
+          }
+          start -= ndiff;
+          if (start % this.rows().length === 0) {
+            start = 0;
           }
         }
       }
+
       return false; // fixme
+
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
